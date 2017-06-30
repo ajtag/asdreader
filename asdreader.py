@@ -203,13 +203,15 @@ def parse_reference(asd, offset):
 def normalise_spectrum(spec, metadata):
     res = spec.copy()
 
-    splice1_index = metadata.splice1_wavelength
-    splice2_index = metadata.splice2_wavelength
+    splice1_index = int(metadata.splice1_wavelength)
+    splice2_index = int(metadata.splice2_wavelength)
 
-    res[:splice1_index] = spec[:metadata.splice1_wavelength] / metadata.intergration_time
+
+    res[:splice1_index] = spec[:splice1_index] / metadata.intergration_time
+
     res[splice1_index:splice2_index] = spec[
-                                       metadata.splice1_wavelength:metadata.splice2_wavelength] * metadata.swir1_gain / 2048
-    res[splice2_index:] = spec[metadata.splice2_wavelength:] * metadata.swir1_gain / 2048
+                                       splice1_index:splice2_index] * metadata.swir1_gain / 2048
+    res[splice2_index:] = spec[splice2_index:] * metadata.swir1_gain / 2048
     return res
     # spec[idx1] < - spec[idx1] / md$it
     # spec[idx2] < - spec[idx2] * md$swir1_gain / 2048
